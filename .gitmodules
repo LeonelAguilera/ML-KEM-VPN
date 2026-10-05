@@ -1,0 +1,3 @@
+[submodule "Software/ML-KEM-rust-implementation"]
+	path = Software/ML-KEM-rust-implementation
+	url = https://github.com/LeonelAguilera/ML-KEM-rust-implementation.git
