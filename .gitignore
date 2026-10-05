@@ -1,0 +1,49 @@
+# VUnit generated files
+unittests/vunit_out/
+unittests/coverage_data/
+unittests/coverage_data
+
+# ModelSim generated files
+[_@]*
+
+## ignore compilation output of ModelSim
+*.mti
+*.dat
+*.dbs
+*.psm
+*.bak
+*.cmp
+*.jpg
+*.html
+*.bsf
+
+## ignore simulation output of ModelSim
+wlf*
+*.wlf
+*.vstf
+*.ucdb
+cov*/
+transcript*
+sc_dpiheader.h
+vsim.dbg
+
+# Quartus 
+## generated files
+synthesis/db/
+synthesis/incremental_db/
+synthesis/output_files/
+synthesis/*.bak
+synthesis/*.qws
+
+## temporary files
+*.rpt
+*.summary
+*.pin
+*.done
+
+# Python cache
+__pycache__/
+*py[cod]
+
+# Ignore virtual python env
+*/venv/*
