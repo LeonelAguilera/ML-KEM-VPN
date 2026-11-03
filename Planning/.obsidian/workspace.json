@@ -201,12 +201,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "c31d32fb36deb826",
+  "active": "87ac7ba922bcb318",
   "lastOpenFiles": [
+    "Serial/Sponge.md",
+    "Untitled.md",
     "Rnd.md",
     "Keccak-p.md",
-    "Keccak.md",
-    "SHA3.md",
+    "Serial/Keccak.md",
+    "Serial/SHA3.md",
     "ML-KEM.Decaps_internal.md",
     "K-PKE.Encrypt.md",
     "J.md",
@@ -215,7 +217,6 @@
     "ML-KEM.Encaps_internal.md",
     "ML-KEM.Encaps.md",
     "ML-KEM.KeyGen_internal.md",
-    "Untitled.md",
     "K-PKE.KeyGen.md",
     "PRF.md",
     "SamplePolyCBD.md",
