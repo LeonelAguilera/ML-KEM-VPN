@@ -1,1 +1,2 @@
-[[BytesToBits]]
+- variable length input (64 * eta, where eta = 2,3)
+- fixed output (one polynomial)

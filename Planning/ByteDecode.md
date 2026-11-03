@@ -1,0 +1,2 @@
+- variable input length based on d (32 * d)
+- fixed output length (one polynomial)

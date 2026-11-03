@@ -1,1 +1,1 @@
-[[SHAKE256]]
+[[SHAKE256]]: irrelevant, take what SHAKE gives

@@ -1,0 +1,2 @@
+- fixed input length (one polynomial)
+- output length depends on parameter d with 32 * d -> d can be from 1 to 11

@@ -1,0 +1,2 @@
+- fixed inputs (two polynomials)
+- fixed outputs (one polynomial)
