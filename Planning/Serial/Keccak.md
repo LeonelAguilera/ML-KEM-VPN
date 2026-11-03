@@ -1,2 +1,2 @@
-[[Sponge]]
-[[Keccak-p]]
+[[Sponge]]: Serial preferred
+[[Keccak-p]]: Parallel preferred

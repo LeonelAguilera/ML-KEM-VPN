@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Rnd.md",
+                "file": "Serial/Keccak.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Rnd"
+              "title": "Keccak"
             }
           }
         ]
@@ -201,14 +201,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "87ac7ba922bcb318",
+  "active": "fbc169b31632144f",
   "lastOpenFiles": [
+    "Serial/SHA3.md",
     "Serial/Sponge.md",
-    "Untitled.md",
     "Rnd.md",
+    "Untitled.md",
     "Keccak-p.md",
     "Serial/Keccak.md",
-    "Serial/SHA3.md",
     "ML-KEM.Decaps_internal.md",
     "K-PKE.Encrypt.md",
     "J.md",

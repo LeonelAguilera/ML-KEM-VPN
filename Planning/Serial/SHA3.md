@@ -1,1 +1,1 @@
-[[Keccak]]
+[[Keccak]]: Serial preferred
