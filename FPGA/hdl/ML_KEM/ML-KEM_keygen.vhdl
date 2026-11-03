@@ -1,0 +1,7 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+
+ENTITY mlkem_keygen IS
+
+END ENTITY;
