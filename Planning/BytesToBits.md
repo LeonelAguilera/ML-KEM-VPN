@@ -1,0 +1,1 @@
+function bytestobits(b_in: in byte_array_t(0 to l); l: in unsigned) return std_logic_vector;
