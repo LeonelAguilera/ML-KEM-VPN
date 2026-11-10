@@ -1,25 +1,27 @@
 -- description: decompresses a d bit integer into 12 bits
 -- author:      Julia Müller
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-use work.mlkem_types_pkg.all;
+USE work.mlkem_types_pkg.ALL;
 
-entity decompress is 
-    port (
-        y       : in coeff_t;
-        d       : in unsigned range 0 to 11;
-        decomp  : out coeff_t
+ENTITY decompress IS 
+    GENERIC (
+        d       : IN NATURAL RANGE 0 TO 11
     );
-end entity decompress;
+    PORT (
+        y       : IN  poly_t;
+        decomp  : OUT poly_t
+    );
+END ENTITY decompress;
 
-architecture basic of decompress is 
-    signal decomp_temp : unsigned(0 to 23);
+ARCHITECTURE basic OF decompress IS
+    -- signal decomp_temp : unsigned(0 to 23);
 begin
     -- rounding to nearest integer:
     -- add 1 shifted left with d-1 before shifting all to right by d
-    decomp_temp <= shift_right(y * MLKEM_Q + shift_left(to_unsigned(1, 24), d - 1), d);
-    decomp <= decomp_temp(0 to 11);
-end architecture basic;
+    -- decomp_temp <= shift_right(y * MLKEM_Q + shift_left(to_unsigned(1, 24), d - 1), d);
+    -- decomp <= decomp_temp(0 to 11);
+END ARCHITECTURE basic;

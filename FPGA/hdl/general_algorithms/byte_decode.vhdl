@@ -1,19 +1,24 @@
 -- description: 
 -- author:      Julia Müller
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-use work.mlkem_types_pkg.all;
+USE work.mlkem_types_pkg.ALL;
 
-entity byte_decode is 
-    generic (
-        D : unsigned range 0 to 11
+ENTITY byte_decode IS 
+    GENERIC (
+        d : NATURAL RANGE 0 TO 11
     );
 
-    port (
-        b : in  byte_array_t(0 to 32*D);
-        f : out poly_t
+    PORT (
+        b : IN byte_array_t(0 TO 32*d);
+        f : OUT  poly_t
     );
-end entity byte_decode;
+END ENTITY byte_decode;
+
+ARCHITECTURE parallel OF byte_decode IS
+BEGIN
+
+END ARCHITECTURE parallel;

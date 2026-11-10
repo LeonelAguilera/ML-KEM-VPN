@@ -1,42 +1,27 @@
 -- description: 
 -- author:      Julia Müller
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-use work.mlkem_types_pkg.all;
+USE work.mlkem_types_pkg.ALL;
 
-entity byte_encode is 
-    generic (
-        D : unsigned range 0 to 11
+ENTITY byte_encode IS 
+    GENERIC (
+        d : NATURAL RANGE 0 TO 11
     );
 
-    port (
-        f : in  poly_t;
-        b : out byte_array_t(0 to 32*D)
+    PORT (
+        f : IN  poly_t;
+        b : OUT byte_array_t(0 TO 32*d)
     );
-end entity byte_encode;
+END ENTITY byte_encode;
 
-architecture parallel of byte_encode is
-begin
-    process(all) is
-    begin
-        for index in 0 to 
-    end process;
-end architecture parallel;
-
--- entity byte_encode is 
---     generic (
---         D : unsigned range 0 to 11
---     );
-
---     port (
---         f : in  coeff_t;
---         b : out coeff_t
---     );
--- end entity byte_encode;
-
--- architecture serial of byte_encode is
-
--- end architecture serial;
+ARCHITECTURE parallel OF byte_encode IS
+BEGIN
+    -- process(all) is
+    -- begin
+    --     for index in 0 to 
+    -- END process;
+END ARCHITECTURE parallel;
