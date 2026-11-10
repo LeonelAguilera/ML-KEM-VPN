@@ -27,3 +27,6 @@ entity kpke_decrypt_ctrl is
     );
     end entity;
     
+entity kpke_decrypt is
+
+    
