@@ -1,26 +1,25 @@
 -- description: 
 -- author:      Julia Müller
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-use work.mlkem_types_pkg.all;
+USE work.mlkem_types_pkg.ALL;
 
-entity sample_poly_cbd is 
-    generic (
-        ETA : unsigned range 2 to 3
+ENTITY sample_poly_cbd IS 
+    GENERIC (
+        eta : NATURAL RANGE 2 TO 3
     );
     
-    port (
-        b : in  byte_array_t(0 to 64*ETA);
-        f : out poly_t
+    PORT (
+        b : IN  byte_array_t(0 to 64*eta);
+        f : OUT poly_t
     );
-end entity sample_poly_cbd;
+END ENTITY sample_poly_cbd;
 
-architecture parallel of sample_poly_cbd is
-    signal bit_array : std_logic_vector(0 to 8*64*ETA);
-begin
-    bit_array <= bytestobits(b, 64*ETA);
-
-end architecture parallel;
+ARCHITECTURE parallel OF sample_poly_cbd IS
+    -- signal bit_array : std_logic_vector(0 to 8*64*eta);
+BEGIN
+    -- bit_array <= bytestobits(b, 64*eta);
+END ARCHITECTURE parallel;

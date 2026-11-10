@@ -1,15 +1,18 @@
 -- description: 
 -- author:      Julia Müller
 
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-use work.mlkem_types_pkg.all;
+USE work.mlkem_types_pkg.ALL;
 
-entity sample_ntt is 
-    port (
-        b : in  byte_array_t(0 to 33);
-        a : out poly_t
+ENTITY sample_ntt IS 
+    PORT (
+        clk     : IN  STD_LOGIC;
+        start   : IN  STD_LOGIC;
+        b       : IN  byte_array_t(0 TO 33);
+        a       : OUT poly_t;
+        done    : OUT STD_LOGIC
     );
-end entity sample_ntt;
+END ENTITY sample_ntt;
