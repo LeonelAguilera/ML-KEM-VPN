@@ -1,0 +1,1 @@
+function bitstobytes(b_in: in std_logic_vector; l: in unsigned) return byte_array_t;
