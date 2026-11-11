@@ -12,6 +12,6 @@ entity kpke_decrypt is
     ciphertext : in byte_array_t(31 downto 0);
 
     m : out byte_array_t(31 downto 0);
-    done : out std_logic;
+    done : out std_logic
   ) ;
 end kpke_decrypt;
