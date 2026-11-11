@@ -1,17 +1,17 @@
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+Library ieee;
+Use ieee.std_logic_1164.All;
+Use ieee.numeric_std.All;
 
-entity kpke_decrypt is
+ENTITY kpke_decrypt IS
   port (
-    clk : in std_logic;
-    start : in std_logic;
-    k : in std_logic;
+    clk : In std_logic;
+    start : In std_logic;
+    k : In std_logic;
 
-    dk : in byte_array_t(31 downto 0);
-    ciphertext : in byte_array_t(31 downto 0);
+    dk : In byte_array_t(31 Downto 0);
+    ciphertext : In byte_array_t(31 Downto 0);
 
-    m : out byte_array_t(31 downto 0);
-    done : out std_logic
+    m : Out byte_array_t(31 Downto 0);
+    done : Out std_logic
   ) ;
-end kpke_decrypt;
+End kpke_decrypt;
