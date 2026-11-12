@@ -18,7 +18,7 @@ USE work.keccak_types_pkg.ALL;
 -- PORT description
 -- clk:         Wow, look at this! A clock!
 -- reset:       used to reset internal permutation state
---              active low reset
+--              active high reset
 --              -> for H, G, J, PRF: reset at start of each "function call"
 --              -> for XOF: reset only when new context is used
 -- mode:        selects the SHA3 function that is used, defined in keccak_types_pkg
@@ -38,11 +38,12 @@ USE work.keccak_types_pkg.ALL;
 --              previous command was absorb or after reset
 -- out_ready:   stays high as long as the current output is ready and unchanged and
 --              previous command was squeeze
+-- busy:        busy-flag in case FSM is used 
 
 ENTITY keccak IS 
     GENERIC (
         data_in_size    : NATURAL;
-        data_out_size   : NATURAL;
+        data_out_size   : NATURAL
     )
     PORT (
         clk         : IN  STD_LOGIC;
@@ -55,5 +56,6 @@ ENTITY keccak IS
         data_out    : OUT STD_LOGIC_VECTOR (0 TO data_out_size);
         next_in     : OUT STD_LOGIC;
         out_ready   : OUT STD_LOGIC;
+        busy        : OUT STD_LOGIC
     );
 END ENTITY keccak;
