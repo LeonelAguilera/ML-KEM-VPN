@@ -3,64 +3,69 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
+LIBRARY work;
+USE work.mlkem_types_pkg.ALL;
 
 ENTITY random_number_generator IS
     PORT (
         clk: IN STD_LOGIC;
         random_number: OUT byte_array_t(31 DOWNTO 0);
-        done: OUT STD_LOGIC;
+        done: OUT STD_LOGIC
     );
 END ENTITY;
 
 ARCHITECTURE behavioral OF random_number_generator IS
+    TYPE stages_t IS ARRAY(3 DOWNTO 0) OF INTEGER;
+    TYPE jitter_t IS ARRAY(3 DOWNTO 0) OF STD_LOGIC_VECTOR(1 DOWNTO 0);
+
     SIGNAL seed: STD_LOGIC_VECTOR((32 * 8) - 1 DOWNTO 0);
-    SIGNAL ring_output: STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL ring_prev_output: STD_LOGIC_VECTOR(3 DOWNTO 0);
 
     SIGNAL stage_counter: UNSIGNED(6 DOWNTO 0);
-    SIGNAL jitter_counter: ARRAY (3 DOWNTO 0) OF UNSIGNED(1 DOWNTO 0);
+    SIGNAL jitter_counter: jitter_t;
+    SIGNAL jitter_measure_done: STD_LOGIC_VECTOR(3 DOWNTO 0);
 
-
-    COMPONENT ring_oscillator
+    COMPONENT jitter_measure IS
         GENERIC (
-            stages: INTEGER := 5
+            stages: INTEGER
         );
         PORT (
-            state: OUTPUT STD_LOGIC
+            clk: IN STD_LOGIC;
+            bias: IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+            jitter: OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+            done: OUT STD_LOGIC
         );
     END COMPONENT;
 
-    CONSTANT oscillator_stages: ARRAY(3 DOWNTO 0) OF INTEGER := (5, 7, 11, 13);
+    CONSTANT oscillator_stages: stages_t := (179, 181, 191, 193);
 BEGIN
-    oscillators: FOR i IN 3 DOWNTO 0 GENERATE
-        ring_i: ring_oscillator
+    jitter_measurements: FOR i IN 3 DOWNTO 0 GENERATE
+        measure_i: jitter_measure
             GENERIC MAP (
-                stages => oscillator_stages(i);
+                stages => oscillator_stages(i)
             )
             PORT MAP (
-                state => ring_output(i);
+                clk => clk,
+                bias => jitter_counter((i + 1) MOD 4),
+                jitter => jitter_counter(i),
+                done => jitter_measure_done(i)
             );
     END GENERATE;
 
-    PROCESS(clk, ring_output) IS
+    PROCESS(clk, jitter_counter, jitter_measure_done) IS
+        VARIABLE next_data: STD_LOGIC;
+        VARIABLE rand_bits: STD_LOGIC_VECTOR(1 DOWNTO 0);
     BEGIN
         IF RISING_EDGE(clk) THEN
+            next_data := '0';
             FOR i IN 3 DOWNTO 0 LOOP
-                IF (ring_output(i) = '1') AND (ring_prev_output(i) = '0') THEN
-                    FOR j IN seed'HIGH DOWNTO 2 LOOP
-                        seed(j) <= seed(j - 2);
-                    END LOOP;
-                    
-                    seed(1 DOWNTO 0) <= STD_LOGIC_VECTOR(jitter_counter(i));
-
-                    jitter_counter(i) <= 0;
-                    stage_counter <= stage_counter + 1;
-                ELSE
-                    jitter_counter(i) <= jitter_counter(i) + 1;
-                END IF;
-
-                ring_prev_output(i) <= ring_output(i);
+                next_data := next_data OR jitter_measure_done(i);
+                rand_bits := rand_bits XOR (jitter_counter(i) AND jitter_measure_done(i));
             END LOOP;
+            IF next_data = '1' THEN
+                seed(seed'HIGH DOWNTO 2) <= seed(seed'HIGH - 2 DOWNTO 0);
+                seed(1 DOWNTO 0) <= rand_bits;
+                stage_counter <= stage_counter + 1;
+            END IF;
         END IF;
     END PROCESS;
 
@@ -69,4 +74,5 @@ BEGIN
     END GENERATE;
     done <= '1' WHEN stage_counter = 0 ELSE
             '0';
+
 END ARCHITECTURE;

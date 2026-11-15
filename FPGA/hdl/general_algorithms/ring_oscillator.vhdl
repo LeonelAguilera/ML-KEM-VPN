@@ -4,23 +4,23 @@ USE ieee.numeric_std.ALL;
 
 ENTITY ring_oscillator IS
     GENERIC (
-        stages: INTEGER := 5
+        stages: INTEGER := 25
     );
     PORT (
-        state: OUT STD_LOGIC;
+        state: OUT STD_LOGIC
     );
 END ENTITY;
 
 ARCHITECTURE behavioral OF ring_oscillator IS
     SIGNAL ring: STD_LOGIC_VECTOR(stages - 1 DOWNTO 0);
+
+    ATTRIBUTE syn_keep : integer;
+    ATTRIBUTE syn_keep of ring : signal is 1;
 BEGIN
-    PROCESS (ring) IS
-    BEGIN
-        ring(0) <= NOT ring (stages - 1) AFTER 0.5 ns;
-        FOR i IN 1 TO stages - 1 LOOP
-            ring(i) <= NOT ring(i - 1) AFTER 0.5 ns;
-        END LOOP;
-    END PROCESS;
+    ring(0) <= NOT ring (stages - 1);
+    ring_stages: FOR i IN 1 TO stages - 1 GENERATE
+        ring(i) <= NOT ring(i - 1);
+    END GENERATE;
     
     state <= ring(0);
 END ARCHITECTURE;
