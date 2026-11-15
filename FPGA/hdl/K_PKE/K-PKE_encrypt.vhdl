@@ -1,19 +1,20 @@
-Library ieee;
-Use ieee.std_logic_1164.all;
-Use ieee.numeric_std.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+USE work.mlkem_types_pkg.ALL;
 
-Entity kpke_decrypt_ctrl Is
-    Port(
-        clk   : In std_logic;
-        start : In std_logic;
-        k     : In integer Range 2 To 4;
+ENTITY kpke_decrypt_ctrl IS
+    PORT(
+        clk   : IN STD_LOGIC;
+        start : IN STD_LOGIC;
+        k     : IN INTEGER RANGE 2 TO 4;
 
-        ek : In byte_array_t(31 Downto 0);
-        m  : In byte_array_t(31 Downto 0);
-        r  : In byte_array_t(31 Downto 0);
+        ek : IN byte_array_t(31 DOWNTO 0);
+        m  : IN byte_array_t(31 DOWNTO 0);
+        r  : IN byte_array_t(31 DOWNTO 0);
 
-        ciphertext : Out byte_array_t(31 Downto 0);
+        ciphertext : OUT byte_array_t(31 DOWNTO 0);
 
-        done : Out std_logic
+        done : OUT STD_LOGIC
     );
-    End Entity;
+    END ENTITY;
