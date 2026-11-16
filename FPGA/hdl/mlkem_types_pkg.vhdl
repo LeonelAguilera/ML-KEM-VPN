@@ -39,7 +39,7 @@ PACKAGE BODY mlkem_types_pkg IS
   ) RETURN STD_LOGIC_VECTOR IS 
     VARIABLE b_out : STD_LOGIC_VECTOR(0 TO 8*b_in'LENGTH-1);
   begin
-    FOR i IN 0 TO b_in'RANGE LOOP
+    FOR i IN b_in'RANGE LOOP
         FOR j IN 0 TO 7 LOOP
             b_out(8*i + j) := b_in(i)(j);
         END LOOP;
@@ -50,7 +50,7 @@ PACKAGE BODY mlkem_types_pkg IS
   FUNCTION bitstobytes(
     b_in: IN STD_LOGIC_VECTOR
   ) RETURN byte_array_t IS
-    VARIABLE b_out : byte_array_t;
+    VARIABLE b_out : byte_array_t(0 TO b_in'LENGTH/8-1);
   begin
     ASSERT (b_in'LENGTH mod 8 = 0)
       REPORT "bitstobytes: Input length must be a multiple of 8"
@@ -58,7 +58,7 @@ PACKAGE BODY mlkem_types_pkg IS
 
     b_out := (OTHERS => (OTHERS => '0'));
 
-    FOR i IN 0 TO b_in'RANGE LOOP
+    FOR i IN b_in'RANGE LOOP
         b_out(i / 8)(i mod 8) := b_in(i);
     END LOOP;
 

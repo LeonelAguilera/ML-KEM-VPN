@@ -11,8 +11,8 @@ USE IEEE.NUMERIC_STD.ALL;
 USE work.keccak_types_pkg.ALL;
 
 -- GENERIC description
--- data_in_size:    Defines size of input data (meaning number of parallel bits)
--- data_out_size:   Defines size of output data (meaning number of parallel bits)
+-- data_in_size:    Defines size of input data package (meaning number of parallel bytes)
+-- data_out_size:   Defines size of output data package (meaning number of parallel bytes)
 
 
 -- PORT description
@@ -22,17 +22,17 @@ USE work.keccak_types_pkg.ALL;
 --              -> for H, G, J, PRF: reset at start of each "function call"
 --              -> for XOF: reset only when new context is used
 -- mode:        selects the SHA3 function that is used, defined in keccak_types_pkg
--- data_in:     input_data -> data_in_size bits
--- in_len:      length of valid bits of current input = index of first invalid bit
---              (valid bits are expected at LSB end)
+-- data_in:     input_data -> data_in_size bytes
+-- in_len:      length of valid bytes of current input = index of first invalid byte
+--              (valid bytes are expected at LSB end)
 -- absorb:      set high for one clock cycle to indicate that data_in is ready 
 --              (only valid if next_in is high, next_in goes low after the entity 
---              recognizes the next absorb and reads the input bits)
+--              recognizes the next absorb and reads the input bytes)
 --              Staying high while next_in is low won't do anything.
 -- squeeze:     set high for one clock cycle to indicate that data_out should be given
 --              (wait for out_ready to read data_out)
 --              Staying high while out_ready is low won't do anything.
--- data_out:    hashed output data, all data_out_size bits are valid always
+-- data_out:    hashed output data, all data_out_size bytes are valid always
 --              (only throw them away when you know what you're doing)
 -- next_in:     stays high as long as the unit is ready to read new input data and 
 --              previous command was absorb or after reset
@@ -49,11 +49,11 @@ ENTITY keccak IS
         clk         : IN  STD_LOGIC;
         reset       : IN  STD_LOGIC;
         mode        : IN  keccac_mode_t;
-        data_in     : IN  STD_LOGIC_VECTOR (0 TO data_in_size-1);
+        data_in     : IN  byte_array_t (0 TO data_in_size-1);
         in_len      : IN  NATURAL RANGE 1 TO data_in_size;
         absorb      : IN  STD_LOGIC;
         squeeze     : IN  STD_LOGIC;
-        data_out    : OUT STD_LOGIC_VECTOR (0 TO data_out_size);
+        data_out    : OUT byte_array_t (0 TO data_out_size);
         next_in     : OUT STD_LOGIC;
         out_ready   : OUT STD_LOGIC;
         busy        : OUT STD_LOGIC
