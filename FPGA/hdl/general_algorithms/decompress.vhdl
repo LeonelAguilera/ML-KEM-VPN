@@ -7,9 +7,17 @@ USE IEEE.NUMERIC_STD.ALL;
 
 USE work.mlkem_types_pkg.ALL;
 
+-- GENERIC description
+-- d:           Number of bits of input coefficients
+
+-- PORT description
+-- x:           Input polynomial (256 coefficients with 12 bits each, but only d bits
+--              used (the LSBs))
+-- comp:        Output polynomial, 12 bit (all bits used) 
+
 ENTITY decompress IS 
     GENERIC (
-        d       : IN NATURAL RANGE 0 TO 11
+        d       : IN NATURAL RANGE 1 TO 11
     );
     PORT (
         y       : IN  poly_t;
@@ -17,11 +25,24 @@ ENTITY decompress IS
     );
 END ENTITY decompress;
 
-ARCHITECTURE basic OF decompress IS
-    -- signal decomp_temp : unsigned(0 to 23);
-begin
-    -- rounding to nearest integer:
-    -- add 1 shifted left with d-1 before shifting all to right by d
-    -- decomp_temp <= shift_right(y * MLKEM_Q + shift_left(to_unsigned(1, 24), d - 1), d);
-    -- decomp <= decomp_temp(0 to 11);
-END ARCHITECTURE basic;
+ARCHITECTURE behavioral OF decompress IS
+    SUBTYPE extended_coeff_t IS UNSIGNED(0 TO 12+d);
+    TYPE extended_poly_t IS ARRAY (0 TO MLKEM_N - 1) OF extended_coeff_t;
+BEGIN
+
+    PROCESS(y)
+        VARIABLE var_decomp : extended_coeff_t;
+        VARIABLE var_round  : UNSIGNED(0 TO 23);
+    BEGIN
+        -- add 1/2 for rounding to nearest integer:
+        -- + 1/2 = + shift_right(shift_left(1, d-1), d) 
+        var_round := shift_left(to_unsigned(1, 24), d - 1);
+        FOR coeff_index IN y'RANGE LOOP
+            var_decomp := shift_right(y * MLKEM_Q + var_round, d);  
+            decomp(coeff_index) <= var_decomp(0 to 11); 
+        END LOOP;
+
+    END PROCESS;
+    
+END ARCHITECTURE behavioral;
+

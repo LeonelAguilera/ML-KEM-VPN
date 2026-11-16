@@ -7,9 +7,17 @@ USE IEEE.NUMERIC_STD.ALL;
 
 USE work.mlkem_types_pkg.ALL;
 
+-- GENERIC description
+-- d:           Number of valid/used bits in input polynomial
+
+
+-- PORT description
+-- f:           Input polynomial
+-- b:           Output bit array with LSB ordering (index 0 will contain LSB of f(0))
+
 ENTITY byte_encode IS 
     GENERIC (
-        d : NATURAL RANGE 0 TO 11
+        d : NATURAL RANGE 1 TO 12
     );
 
     PORT (
@@ -20,8 +28,12 @@ END ENTITY byte_encode;
 
 ARCHITECTURE parallel OF byte_encode IS
 BEGIN
-    -- process(all) is
-    -- begin
-    --     for index in 0 to 
-    -- END process;
+
+    PROCESS
+    BEGIN
+        FOR coeff_index IN f'RANGE LOOP
+            b(coeff_index*d TO (coeff_index+1)*d-1) <= f(coeff_index)(0 TO d-1);
+        END LOOP;
+    END PROCESS;
+
 END ARCHITECTURE parallel;

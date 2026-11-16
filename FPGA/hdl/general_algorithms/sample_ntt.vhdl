@@ -6,6 +6,7 @@ USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
 USE work.mlkem_types_pkg.ALL;
+USE work.keccak_types_pkg.ALL;
 
 ENTITY sample_ntt IS 
     PORT (
@@ -16,3 +17,4 @@ ENTITY sample_ntt IS
         done    : OUT STD_LOGIC
     );
 END ENTITY sample_ntt;
+
