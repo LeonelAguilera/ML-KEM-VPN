@@ -1,16 +1,18 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
+LIBRARY work;
+USE work.mlkem_types_pkg.ALL;
 
 ENTITY butterfly IS
     GENERIC(
-        zeta: coeff_t := 1
+        zeta: coeff_t := "00000000001"
     );
     PORT (
         x0: IN coeff_t;
         x1: IN coeff_t;
-        y0: IN coeff_t;
-        y1: IN coeff_t
+        y0: OUT coeff_t;
+        y1: OUT coeff_t
     );
 END ENTITY;
 
