@@ -4,6 +4,7 @@ USE ieee.numeric_std.ALL;
 USE ieee.math_real.ALL;
 LIBRARY work;
 USE work.mlkem_types_pkg.ALL;
+USE work.precomputed_ntt_values.ALL;
 
 ENTITY ntt_inv IS
     PORT (
@@ -30,16 +31,13 @@ ARCHITECTURE behavioral OF ntt_inv IS
         );
     END COMPONENT;
 BEGIN
-    layers(0)(0) <= f;
+    layers(0) <= f;
     ntt_layers: FOR len_i IN 1 TO layer_count GENERATE
         ntt_sections: FOR start_i IN 0 TO (256/(2*(2**len_i)) - 1) GENERATE
             ntt_butterflies: FOR j IN (2*(2**len_i)*start_i) TO ((2*(2**len_i)*start_i) + (2**len_i) - 1) GENERATE
                 ntt_butterfly: butterfly
-                    GENERIC MAP (
-                        --zeta => STD_LOGIC_VECTOR(TO_UNSIGNED(compute_zeta(len_i, start_i), COEFF_WL))
-                        zeta => STD_LOGIC_VECTOR(TO_UNSIGNED(
-                            (17**(127 - (2**(7 - len_i)) + start_i)) MOD MLKEM_Q
-                        , COEFF_WL))
+                    GENERIC MAP 
+                        zeta => NTT_ZETA(127 - ((2**(7 - len_i)) + start_i))
                     )
                     PORT MAP (
                         x0 => layers(len_i - 1)(j),
@@ -51,6 +49,6 @@ BEGIN
         END GENERATE;
     END GENERATE;
     last_multiplication: FOR i IN 0 TO 255 GENERATE
-        fp <= layers(layer_count - 1)(i) * STD_LOGIC_VECTOR(TO_UNSIGNED(3303, COEFF_WL));
+        fp(i) <= layers(layer_count - 1)(i) * STD_LOGIC_VECTOR(TO_UNSIGNED(3303, COEFF_WL));
     END GENERATE;
 END ARCHITECTURE;
