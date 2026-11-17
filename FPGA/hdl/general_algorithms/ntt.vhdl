@@ -30,6 +30,7 @@ ARCHITECTURE behavioral OF ntt IS
         );
     END COMPONENT;
 BEGIN
+    layers(0)(0) <= f;
     ntt_layers: FOR len_i IN 1 TO layer_count GENERATE
     BEGIN
         ntt_sections: FOR start_i IN 0 TO (256/(2*(2**len_i)) - 1) GENERATE
@@ -38,7 +39,7 @@ BEGIN
                     GENERIC MAP (
                         --zeta => STD_LOGIC_VECTOR(TO_UNSIGNED(compute_zeta(len_i, start_i), COEFF_WL))
                         zeta => STD_LOGIC_VECTOR(TO_UNSIGNED(
-                            (11**((2**(7 - len_i)) + start_i)) MOD MLKEM_Q
+                            (17**((2**(7 - len_i)) + start_i)) MOD MLKEM_Q
                         , COEFF_WL))
                     )
                     PORT MAP (
@@ -50,5 +51,6 @@ BEGIN
             END GENERATE;
         END GENERATE;
     END GENERATE;
+    fp <= layers(layer_count - 1)(i) * STD_LOGIC_VECTOR(TO_UNSIGNED(3303, COEFF_WL));
 END ARCHITECTURE;
 
