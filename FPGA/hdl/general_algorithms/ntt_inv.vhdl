@@ -4,7 +4,7 @@ USE ieee.numeric_std.ALL;
 USE ieee.math_real.ALL;
 LIBRARY work;
 USE work.mlkem_types_pkg.ALL;
-USE work.precomputed_ntt_values.ALL;
+USE work.ntt_precomputed_values.ALL;
 
 ENTITY ntt_inv IS
     PORT (
@@ -36,8 +36,8 @@ BEGIN
         ntt_sections: FOR start_i IN 0 TO (256/(2*(2**len_i)) - 1) GENERATE
             ntt_butterflies: FOR j IN (2*(2**len_i)*start_i) TO ((2*(2**len_i)*start_i) + (2**len_i) - 1) GENERATE
                 ntt_butterfly: butterfly
-                    GENERIC MAP 
-                        zeta => NTT_ZETA(127 - ((2**(7 - len_i)) + start_i))
+                    GENERIC MAP (
+                        zeta => NTT_ZETA(128 - ((2**(7 - len_i)) + start_i))
                     )
                     PORT MAP (
                         x0 => layers(len_i - 1)(j),

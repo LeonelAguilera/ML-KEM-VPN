@@ -4,6 +4,7 @@ USE ieee.numeric_std.ALL;
 USE ieee.math_real.ALL;
 LIBRARY work;
 USE work.mlkem_types_pkg.ALL;
+USE work.ntt_precomputed_values.ALL;
 
 ENTITY ntt IS
     PORT (
@@ -47,6 +48,6 @@ BEGIN
             END GENERATE;
         END GENERATE;
     END GENERATE;
-    fp <= layers(layer_count - 1) * STD_LOGIC_VECTOR(TO_UNSIGNED(3303, COEFF_WL));
+    fp <= layers(layer_count - 1);
 END ARCHITECTURE;
 
