@@ -1,2 +1,0 @@
-- fixed inputlength (one polynomial)
-- fixed outputlength (one polynomial)- 

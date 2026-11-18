@@ -7,6 +7,7 @@ USE work.mlkem_types_pkg.ALL;
 PACKAGE ntt_helper_functions IS
     PURE FUNCTION bit_reverse(data_in: IN INTEGER) RETURN INTEGER;
     PURE FUNCTION compute_ntt_zeta(i : IN INTEGER) RETURN coeff_t;
+    PURE FUNCTION compute_mul_ntt_zeta(i : IN INTEGER) RETURN coeff_t;
 END PACKAGE ntt_helper_functions;
 
 
@@ -34,7 +35,24 @@ PACKAGE BODY ntt_helper_functions IS
             result := (result * zeta_base) MOD MLKEM_Q;
         END LOOP;
 
-        REPORT "exponent = " & INTEGER'IMAGE(exponent) & " \t result = " & INTEGER'IMAGE(result);
+        RETURN STD_LOGIC_VECTOR(TO_UNSIGNED(result, COEFF_WL));
+    END FUNCTION;
+
+    PURE FUNCTION compute_mul_ntt_zeta(i : IN INTEGER) RETURN coeff_t IS
+        CONSTANT zeta_base: INTEGER := 17;
+        VARIABLE exponent: INTEGER;
+        VARIABLE result: INTEGER;
+    BEGIN
+        result := 1;
+        exponent := 1 + (2 * bit_reverse(i - (i MOD 2))); -- Odd indeces must
+        -- produce the negative of the previous index. Negative values are
+        -- handled in the base_case_multiply for efficiency
+        -- TODO: Further testing of negative number multiplication in modular
+        -- arithmetic. These considerations may prove to be unnecesary.
+
+        FOR i IN 1 TO exponent LOOP
+            result := (result * zeta_base) MOD MLKEM_Q;
+        END LOOP;
 
         RETURN STD_LOGIC_VECTOR(TO_UNSIGNED(result, COEFF_WL));
     END FUNCTION;
