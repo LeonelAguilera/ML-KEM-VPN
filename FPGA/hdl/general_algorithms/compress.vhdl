@@ -25,20 +25,19 @@ ENTITY compress IS
 END ENTITY compress;
 
 ARCHITECTURE behavioral OF compress IS
-    SUBTYPE extended_coeff_t IS UNSIGNED(0 TO 12+d);
-    TYPE extended_poly_t IS ARRAY (0 TO MLKEM_N - 1) OF extended_coeff_t;
+    SUBTYPE extended_coeff_t IS STD_LOGIC_VECTOR(0 TO COEFF_WL+d);
 BEGIN
 
     PROCESS(x)
         VARIABLE resize_x : extended_coeff_t;
-        VARIABLE var_compressed : extended_poly_t;
+        VARIABLE var_compressed : extended_coeff_t;
     BEGIN
         FOR coeff_index IN x'RANGE LOOP
             -- expand x for shift to keep MSBs
-            resize_x := (d DOWNTO 0 => '0') & x;
+            resize_x := (d DOWNTO 0 => '0') & x(coeff_index);
             -- + 1664 to round to nearest integer 
-            var_compressed := (shift_left(resize_x, d) + 1664)/MLKEM_Q;  
-            comp(coeff_index) <= (comp'length-1 DOWNTO d => '0') & var_compressed(d-1 DOWNTO 0);
+            var_compressed := STD_LOGIC_VECTOR((shift_left(unsigned(resize_x), d) + to_unsigned(1664, resize_x'length))/to_unsigned(MLKEM_Q, resize_x'length));  
+            comp(coeff_index) <= (comp'length-1 DOWNTO d => '0') & var_compressed(0 TO d-1);
         END LOOP;
     END PROCESS;
          

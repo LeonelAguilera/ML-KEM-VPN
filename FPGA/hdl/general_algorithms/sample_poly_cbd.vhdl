@@ -32,7 +32,7 @@ ARCHITECTURE behavioral OF sample_poly_cbd IS
 BEGIN
     bit_array <= bytestobits(b);
 
-    PROCESS
+    PROCESS(bit_array)
         VARIABLE x : NATURAL RANGE 0 TO eta;
         VARIABLE y : NATURAL RANGE 0 TO eta;
         VARIABLE diff : INTEGER RANGE -eta TO eta;
@@ -41,13 +41,19 @@ BEGIN
             x := 0;
             y := 0;
             FOR j IN 0 TO eta LOOP
-                x := x + bit_array(2*coeff_index*eta + j);
-                y := y + bit_array(2*coeff_index*eta + eta + j);
+                IF bit_array(2*coeff_index*eta + j) = '1' THEN
+                    x := x + 1;
+                END IF;
+                IF bit_array(2*coeff_index*eta + eta + j) = '1' THEN
+                    y := y + 1;
+                END IF;
+                -- x := x + TO_INTEGER(UNSIGNED('0' & bit_array(2*coeff_index*eta + j)));
+                --y := y + TO_INTEGER(UNSIGNED('0' & bit_array(2*coeff_index*eta + eta + j)));
             END LOOP;
             diff := x-y;
 
-            f(coeff_index) <= diff when (diff > 0) else
-                              diff + MLKEM_Q;
+            f(coeff_index) <= STD_LOGIC_VECTOR(TO_SIGNED(diff, COEFF_WL)) when (diff > 0) else
+                              STD_LOGIC_VECTOR(TO_SIGNED(diff + MLKEM_Q, COEFF_WL));
         END LOOP;
     END PROCESS;
 

@@ -26,8 +26,7 @@ ENTITY decompress IS
 END ENTITY decompress;
 
 ARCHITECTURE behavioral OF decompress IS
-    SUBTYPE extended_coeff_t IS UNSIGNED(0 TO 12+d);
-    TYPE extended_poly_t IS ARRAY (0 TO MLKEM_N - 1) OF extended_coeff_t;
+    SUBTYPE extended_coeff_t IS STD_LOGIC_VECTOR(0 TO COEFF_WL+d);
 BEGIN
 
     PROCESS(y)
@@ -36,9 +35,9 @@ BEGIN
     BEGIN
         -- add 1/2 for rounding to nearest integer:
         -- + 1/2 = + shift_right(shift_left(1, d-1), d) 
-        var_round := shift_left(to_unsigned(1, 24), d - 1);
+        var_round := shift_left(to_unsigned(1, 2*COEFF_WL), d - 1);
         FOR coeff_index IN y'RANGE LOOP
-            var_decomp := shift_right(y * MLKEM_Q + var_round, d);  
+            var_decomp := STD_LOGIC_VECTOR(shift_right(UNSIGNED(y(coeff_index)) * MLKEM_Q + var_round, d));  
             decomp(coeff_index) <= var_decomp(0 to 11); 
         END LOOP;
 

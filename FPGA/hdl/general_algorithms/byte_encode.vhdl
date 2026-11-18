@@ -27,13 +27,14 @@ ENTITY byte_encode IS
 END ENTITY byte_encode;
 
 ARCHITECTURE parallel OF byte_encode IS
+    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8);
 BEGIN
-
-    PROCESS
+    PROCESS(f)
     BEGIN
         FOR coeff_index IN f'RANGE LOOP
-            b(coeff_index*d TO (coeff_index+1)*d-1) <= f(coeff_index)(0 TO d-1);
+            bit_array(coeff_index*d TO (coeff_index+1)*d-1) <= f(coeff_index)(0 TO d-1);
         END LOOP;
     END PROCESS;
+    b <= bitstobytes(bit_array);
 
 END ARCHITECTURE parallel;

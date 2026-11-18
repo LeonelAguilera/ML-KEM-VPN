@@ -28,12 +28,18 @@ ENTITY byte_decode IS
 END ENTITY byte_decode;
 
 ARCHITECTURE parallel OF byte_decode IS
+    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8);
 BEGIN
+    bit_array <= bytestobits(b);
 
-    PROCESS
+    PROCESS(bit_array)
+        VARIABLE temp : coeff_t;
     BEGIN
         FOR coeff_index IN f'RANGE LOOP
-            f(coeff_index) <= ((0 TO d-1) => b(coeff_index*d TO (coeff_index+1)*d-1), OTHERS => '0');
+            temp := (OTHERS => '0');
+            temp(0 TO d-1) := bit_array(coeff_index*d TO (coeff_index+1)*d-1); 
+
+            f(coeff_index) <= temp;
         END LOOP;
     END PROCESS;
 

@@ -31,7 +31,7 @@ ENTITY sample_ntt IS
 END ENTITY sample_ntt;
 
 ARCHITECTURE behavioral OF sample_ntt is
-    TYPE sample_ntt_state_t IS (IDLE, ABSORB, SQUEEZE, GENERATE_COEFFS, STORE_COEFFS);
+    TYPE sample_ntt_state_t IS (IDLE, WAIT_FOR_XOF, ABSORB, SQUEEZE, GENERATE_COEFFS, STORE_COEFFS);
 
     CONSTANT xof_data_in_size_c : NATURAL := 4; -- four bytes
     CONSTANT xof_data_out_size_c : NATURAL := 3; -- three bytes
@@ -52,7 +52,7 @@ ARCHITECTURE behavioral OF sample_ntt is
     SIGNAL xof_in_len : NATURAL RANGE 1 TO xof_data_in_size_c;
     SIGNAL xof_absorb : STD_LOGIC;
     SIGNAL xof_next_in : STD_LOGIC;
-    SIGNAL xof_data_out : byte_array_t(0 TO xof_data_in_size_c-1);
+    SIGNAL xof_data_out : byte_array_t(0 TO xof_data_out_size_c-1);
     SIGNAL xof_squeeze : STD_LOGIC;
     SIGNAL xof_out_ready : STD_LOGIC;
     SIGNAL xof_busy : STD_LOGIC;
@@ -70,7 +70,7 @@ BEGIN
         PORT MAP(
             clk         => clk,
             reset       => xof_reset,
-            mode        => xof,
+            mode        => mode_xof,
             data_in     => xof_data_in,
             in_len      => xof_in_len,
             absorb      => xof_absorb,
@@ -78,8 +78,8 @@ BEGIN
             data_out    => xof_data_out,
             next_in     => xof_next_in,
             out_ready   => xof_out_ready,
-            busy        => xof_busy,
-        )
+            busy        => xof_busy
+        );
     
     -- -------------------------------------
     -- MAIN PROCESS
@@ -117,14 +117,15 @@ BEGIN
                             xof_absorb <= '0';
                             var_absorb_byte_cnt := absorb_byte_cnt + xof_in_len;
                             absorb_byte_cnt <= var_absorb_byte_cnt;
-                            xof_in_len <=   xof_data_in_size_c CASE xof_in_bytes_total_c - var_absorb_byte_cnt > xof_data_in_size_c ELSE
-                                            xof_in_bytes_total_c - var_absorb_byte_cnt; 
+                            xof_in_len <=   xof_data_in_size_c 
+                                            WHEN xof_in_bytes_total_c - var_absorb_byte_cnt > xof_data_in_size_c 
+                                            ELSE xof_in_bytes_total_c - var_absorb_byte_cnt; 
                             IF var_absorb_byte_cnt = xof_in_bytes_total_c THEN
                                 state <= SQUEEZE;
                             END IF;
                         ELSE
                             -- apply next input data
-                            xof_data_in <= (OTHERS => '0');
+                            xof_data_in <= (OTHERS => (OTHERS => '0'));
                             FOR i IN 0 TO xof_in_len-1 LOOP
                                 xof_data_in(i) <= input_buffer_b(absorb_byte_cnt+i);
                             END LOOP;
@@ -137,16 +138,16 @@ BEGIN
                             state <= GENERATE_COEFFS;
                         END IF;                        
                     WHEN GENERATE_COEFFS =>-------------------------
-                        d1 <= buffer_c(1)(3 DOWNTO 0) & buffer_c(0);
-                        d2 <= buffer_c(2) & buffer_c(1)(7 DOWNTO 4);
+                        d1 <= buffer_c(1)(0 TO 3) & buffer_c(0);
+                        d2 <= buffer_c(2) & buffer_c(1)(4 TO 7);
                         state <= STORE_COEFFS;
                     WHEN STORE_COEFFS =>----------------------------
                         j := 0;
-                        IF d1 < MLKEM_Q THEN
+                        IF UNSIGNED(d1) < MLKEM_Q THEN
                             a(coeff_cnt) <= d1;
                             j := j + 1;
                         END IF;
-                        IF d2 < MLKEM_Q AND coeff_cnt + j < 256  THEN
+                        IF UNSIGNED(d2) < MLKEM_Q AND coeff_cnt + j < 256  THEN
                             a(coeff_cnt+j) <= d2;
                             j := j + 1;
                         END IF;
@@ -157,7 +158,7 @@ BEGIN
                             state <= IDLE;
                         ELSE 
                             state <= SQUEEZE;
-                            xof_squeeze = '1';
+                            xof_squeeze <= '1';
                         END IF;
                     WHEN OTHERS => ---------------------------------
                         state <= IDLE;

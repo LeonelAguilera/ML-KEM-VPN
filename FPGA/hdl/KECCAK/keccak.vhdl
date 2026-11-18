@@ -8,6 +8,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
+USE work.mlkem_types_pkg.ALL;
 USE work.keccak_types_pkg.ALL;
 
 -- GENERIC description
@@ -44,7 +45,7 @@ ENTITY keccak IS
     GENERIC (
         data_in_size    : NATURAL;
         data_out_size   : NATURAL
-    )
+    );
     PORT (
         clk         : IN  STD_LOGIC;
         reset       : IN  STD_LOGIC;
