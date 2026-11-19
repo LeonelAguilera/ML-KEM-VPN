@@ -22,12 +22,12 @@ ENTITY byte_encode IS
 
     PORT (
         f : IN  poly_t;
-        b : OUT byte_array_t(0 TO 32*d)
+        b : OUT byte_array_t(0 TO 32*d-1)
     );
 END ENTITY byte_encode;
 
 ARCHITECTURE parallel OF byte_encode IS
-    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8);
+    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8-1);
 BEGIN
     PROCESS(f)
     BEGIN

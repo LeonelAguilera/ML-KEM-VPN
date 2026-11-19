@@ -28,7 +28,7 @@ ENTITY byte_decode IS
 END ENTITY byte_decode;
 
 ARCHITECTURE parallel OF byte_decode IS
-    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8);
+    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8-1);
 BEGIN
     bit_array <= bytestobits(b);
 

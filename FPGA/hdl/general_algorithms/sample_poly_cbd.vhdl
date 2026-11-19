@@ -28,7 +28,7 @@ ENTITY sample_poly_cbd IS
 END ENTITY sample_poly_cbd;
 
 ARCHITECTURE behavioral OF sample_poly_cbd IS
-    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 8*64*eta);
+    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 8*64*eta-1);
 BEGIN
     bit_array <= bytestobits(b);
 
