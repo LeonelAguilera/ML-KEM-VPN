@@ -47,8 +47,6 @@ BEGIN
                 IF bit_array(2*coeff_index*eta + eta + j) = '1' THEN
                     y := y + 1;
                 END IF;
-                -- x := x + TO_INTEGER(UNSIGNED('0' & bit_array(2*coeff_index*eta + j)));
-                --y := y + TO_INTEGER(UNSIGNED('0' & bit_array(2*coeff_index*eta + eta + j)));
             END LOOP;
             diff := x-y;
 
