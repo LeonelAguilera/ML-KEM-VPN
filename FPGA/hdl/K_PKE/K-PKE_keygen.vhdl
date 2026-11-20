@@ -1,19 +1,20 @@
-Library ieee;
-Use ieee.std_logic_1164.all;
-Use ieee.numeric_std.all;
-Use work.mlkem_types_pkg.all;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.numeric_std.ALL;
+USE work.mlkem_types_pkg.ALL;
+USE work.kpke_pkg.ALL;
 
-Entity kpke_keygen Is
-    Port(
-        clk   : In std_logic;
-        start : In std_logic;
-        k     : In integer range 2 to 4;
+ENTITY kpke_keygen IS
+    PORT(
+        clk   : IN STD_LOGIC;
+        start : IN STD_LOGIC;
+        k     : IN INTEGER RANGE 2 TO 4;
 
-        d : In byte_array_t(31 downto 0);
-        
-        ek  : Out byte_array_t(31 downto 0);
-        dk  : Out byte_array_t(31 downto 0);
+        d : IN byte_array_t(0 TO KPKE_SEED_BYTES - 1);
 
-        done : Out std_logic
+        ek : OUT byte_array_t(0 TO KPKE_EK_MAX_BYTES - 1);  -- 384*k + 32 bytes used
+        dk : OUT byte_array_t(0 TO KPKE_DK_MAX_BYTES - 1);  -- 384*k bytes used
+
+        done : OUT STD_LOGIC
     );
-    End Entity kpke_keygen;
+END ENTITY kpke_keygen;
