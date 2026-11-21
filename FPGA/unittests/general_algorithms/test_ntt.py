@@ -23,18 +23,16 @@ vu.add_vhdl_builtins()
 
 lib = vu.add_library("lib")
 
-# Add VHDL files for the standard design
+# Add packages required for the testbench
 lib.add_source_files(join(root, "hdl/mlkem_types_pkg.vhdl").replace("\\", "/"))
 lib.add_source_files(join(root, "hdl/ntt_helper_functions.vhdl").replace("\\", "/"))
+
+# Add VHDL files for the standard design
+lib.add_source_files(join(root, "hdl/general_algorithms/butterfly.vhdl").replace("\\", "/"))
 lib.add_source_files(join(root, "hdl/general_algorithms/ntt.vhdl").replace("\\", "/"))
 
 # Add testbenches
 lib.add_source_files(join(root, "testbenches/general_algorithms/ntt_tb.vhdl").replace("\\", "/"))
-
-# Add files required for the synthesized version
-# lib.add_source_files(join(root, "hdl/.vo")) # POSTRUN: uncomment
-# lib.add_source_files("/courses/TSEA84/src/verilog/src/altera_primitives.v") # POSTRUN: uncomment
-# lib.add_source_files("/courses/TSEA84/src/verilog/src/cycloneive_atoms.v") # POSTRUN: uncomment
 
 # Set flags for coverage
 if generate_coverage_report:

@@ -55,7 +55,10 @@ BEGIN
         WAIT UNTIL rising_edge(clk);
         IF NOT(ENDFILE(intext)) THEN
             READLINE(intext, iline);
+            REPORT iline.ALL;
             chk_line := SPLIT(STRIP(iline.ALL), ";");
+            REPORT chk_line(0).ALL;
+            REPORT chk_line(1).ALL;
 
             array_elements := SPLIT(STRIP(chk_line(0).ALL), ",");
             FOR i IN 0 TO 255 LOOP
@@ -110,7 +113,7 @@ BEGIN
     dut: ENTITY work.ntt
         PORT MAP(
             f => data1.f,
-            fp => data1.f_hat
+            fp => f_hat
         );
 
     main: PROCESS
