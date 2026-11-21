@@ -55,7 +55,7 @@ lib.set_generic("file_name", join(root, "testbenches/general_algorithms/ntt.txt"
 # Coverage callback
 if generate_coverage_report:
     def post_run(results):
-        results.merge_coverage(file_name=join(root, "unittests/coverage_data"))
+        results.merge_coverage(file_name=join(root, "unittests/general_algorithms/test_ntt/coverage_data"))
     vu.main(post_run=post_run)
 else:
     vu.main()

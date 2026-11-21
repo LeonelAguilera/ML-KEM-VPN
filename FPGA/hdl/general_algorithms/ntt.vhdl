@@ -47,11 +47,6 @@ BEGIN
                     );
             END GENERATE;
         END GENERATE;
-        asdf: my_entity
-            PORT MAP (
-                a1 => layer(4),
-                z2 => potato
-            );
     END GENERATE;
     fp <= layers(layer_count - 1);
 END ARCHITECTURE;

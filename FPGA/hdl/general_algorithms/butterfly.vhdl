@@ -7,7 +7,6 @@ USE work.mlkem_types_pkg.ALL;
 ENTITY butterfly IS
     GENERIC(
         zeta: coeff_t := "000000000001";
-        second2gen : STD_LOGIC:='1'
     );
     PORT (
         x0: IN coeff_t;

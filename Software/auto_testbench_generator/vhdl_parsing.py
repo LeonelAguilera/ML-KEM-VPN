@@ -3,6 +3,12 @@ import re
 from vhdl_entity import Generic, Port, Entity
 
 
+class VhdlFile:
+    imports = []
+    entity = Entity()
+    instances = []
+
+
 def get_vhdl_imports(file_content):
     imported_files = re.findall(r"use work.[^.]*.all", file_content.lower())
     for i in range(0, len(imported_files)):
@@ -52,9 +58,10 @@ def get_vhdl_instances(file_content):
 
 
 def parse_vhdl_file(file_content, entity_name):
-    imports = get_vhdl_imports(file_content)
-    print(imports)
-    entity = get_vhdl_entity(file_content, entity_name)
-    print(entity)
-    instances = get_vhdl_instances(file_content)
-    print(instances)
+    vhdl_file = VhdlFile()
+
+    vhdl_file.imports = get_vhdl_imports(file_content)
+    vhdl_file.entity = get_vhdl_entity(file_content, entity_name)
+    vhdl_file.instances = get_vhdl_instances(file_content)
+
+    return vhdl_file
