@@ -27,8 +27,8 @@ def get_vhdl_entity(file_content, entity_name):
     generics = []
     for i in range(0, len(generic_code)):
         generic = Generic()
-        generic.name = re.findall(r"\w+", generic_code[i])[0]
-        generic.type = re.findall(r"\w+", generic_code[i])[1]
+        generic.name = re.findall(r"\w+", generic_code[i])[0].strip()
+        generic.type = re.findall(r"\w+", generic_code[i])[1].strip()
         generics.append(generic)
 
     port_code = re.findall(r"port[^.]+\);", entity_code)[0]
@@ -37,9 +37,9 @@ def get_vhdl_entity(file_content, entity_name):
     ports = []
     for i in range(0, len(port_code)):
         port = Port()
-        port.name = re.search(r"(\w+)\s*:", port_code[i]).group(1)
-        port.direction = re.findall(r"in|out|inout", port_code[i])[0]
-        port.type = re.search(r"(in|out|inout){1}\s*([^;\n]*)", port_code[i]).group(2)
+        port.name = re.search(r"(\w+)\s*:", port_code[i]).group(1).strip()
+        port.direction = re.findall(r"in|out|inout", port_code[i])[0].strip()
+        port.type = re.search(r"(in|out|inout){1}\s*([^;\n]*)", port_code[i]).group(2).strip()
         ports.append(port)
 
     entity = Entity()
