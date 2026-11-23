@@ -65,8 +65,8 @@ BEGIN
           REPORT "TEST #" & to_string(data_count-pipeline) & 
                 ": inputa = " & to_string(ref_data.inputa) & 
                 ", inputb = " & to_string(ref_data.inputb);
-        --   check_equal(SIGNED(out_data.ouputa), SIGNED(ref_data.outputa));
-        --   check_equal(SIGNED(out_data.ouputb), SIGNED(ref_data.outputb));
+        --   check_equal(SIGNED(actual_data.ouputa), SIGNED(ref_data.outputa));
+        --   check_equal(SIGNED(actual_data.ouputb), SIGNED(ref_data.outputb));
         END IF;
       END LOOP;
 
