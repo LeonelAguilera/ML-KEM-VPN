@@ -13,7 +13,7 @@ USE work.mlkem_types_pkg.ALL;
 
 -- PORT description
 -- f:           Input polynomial
--- b:           Output bit array with LSB ordering (index 0 will contain LSB of f(0))
+-- b:           Output bit array (index 0 will contain LSB of f(0))
 
 ENTITY byte_encode IS 
     GENERIC (
@@ -22,17 +22,17 @@ ENTITY byte_encode IS
 
     PORT (
         f : IN  poly_t;
-        b : OUT byte_array_t(0 TO 32*d-1)
+        b : OUT byte_array_t(32*d-1 DOWNTO 0)
     );
 END ENTITY byte_encode;
 
 ARCHITECTURE parallel OF byte_encode IS
-    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8-1);
+    SIGNAL bit_array : STD_LOGIC_VECTOR(32*d*8-1 DOWNTO 0);
 BEGIN
     PROCESS(f)
     BEGIN
         FOR coeff_index IN f'RANGE LOOP
-            bit_array(coeff_index*d TO (coeff_index+1)*d-1) <= f(coeff_index)(0 TO d-1);
+            bit_array((coeff_index+1)*d-1 DOWNTO coeff_index*d) <= f(coeff_index)(d-1 DOWNTO 0);
         END LOOP;
     END PROCESS;
     b <= bitstobytes(bit_array);

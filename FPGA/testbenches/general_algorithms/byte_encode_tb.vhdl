@@ -23,11 +23,11 @@ ARCHITECTURE behavioral OF tb_encode is
 
     TYPE test_data IS RECORD
         f   : poly_t;
-        b   : byte_array_t(0 TO 32*number_of_bits-1);
+        b   : byte_array_t(32*number_of_bits-1 DOWNTO 0);
     END RECORD test_data;
 
     TYPE out_data IS RECORD
-        b   : byte_array_t(0 TO 32*number_of_bits-1);
+        b   : byte_array_t(32*number_of_bits-1 DOWNTO 0);
     END RECORD out_data;
 
     TYPE pipeddata IS ARRAY(INTEGER RANGE <>) OF test_data;
@@ -61,12 +61,12 @@ BEGIN
       test_runner_setup(runner, runner_cfg);  --Vunit test simulation starts
       WHILE delayed_done /= '1' LOOP
         WAIT UNTIL RISING_EDGE(clk);
+        WAIT FOR 0.1 ns;
         IF data_count >= pipeline + 1 AND delayed_done = '0' THEN
-            WAIT FOR 0.1 ns;
             REPORT "TEST #" & to_string(data_count-pipeline) & 
                 ": f(0) = " & to_string(delayed_ref_data.f(0));
             FOR i IN 0 TO 5 LOOP
-                check_equal(SIGNED(actual_data.b(i)), SIGNED(delayed_ref_data.b(i)));
+                check_equal(UNSIGNED(actual_data.b(i)), UNSIGNED(delayed_ref_data.b(i)));
             END LOOP;
         END IF;
       END LOOP;
@@ -87,15 +87,15 @@ BEGIN
             "10001"
         );
 
-        VARIABLE bit_array      : STD_LOGIC_VECTOR(0 TO 32*8*number_of_bits-1);
+        VARIABLE bit_array      : STD_LOGIC_VECTOR(32*8*number_of_bits-1 DOWNTO 0);
     BEGIN
         WAIT UNTIL RISING_EDGE(clk);
         IF data_count = number_of_tests THEN
             done <= '1';
         ELSE
             FOR i IN 0 TO 255 LOOP  
-                ref_data.f(i) <= (0 TO COEFF_WL-number_of_bits-1 => '1') & input_array(data_count);
-                bit_array(i*number_of_bits TO (i+1)*number_of_bits-1) := input_array(data_count);
+                ref_data.f(i) <= (COEFF_WL-1 DOWNTO number_of_bits => '0') & input_array(data_count);
+                bit_array((i+1)*number_of_bits-1 DOWNTO i*number_of_bits) := input_array(data_count);
             END LOOP;
             ref_data.b <= bitstobytes(bit_array);
             data_count <= data_count + 1;

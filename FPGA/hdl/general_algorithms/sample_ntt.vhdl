@@ -23,7 +23,7 @@ ENTITY sample_ntt IS
         clk     : IN  STD_LOGIC;
         reset   : IN  STD_LOGIC;
         start   : IN  STD_LOGIC;
-        b       : IN  byte_array_t(0 TO 33);
+        b       : IN  byte_array_t(33 DOWNTO 0);
         a       : OUT poly_t;
         busy    : OUT STD_LOGIC;
         done    : OUT STD_LOGIC
@@ -39,20 +39,20 @@ ARCHITECTURE behavioral OF sample_ntt is
 
     -- internal registers
     SIGNAL state : sample_ntt_state_t;
-    SIGNAL input_buffer_b : byte_array_t(0 TO 33);
+    SIGNAL input_buffer_b : byte_array_t(33 DOWNTO 0);
     SIGNAL absorb_byte_cnt : NATURAL RANGE 0 TO xof_in_bytes_total_c;
-    SIGNAL buffer_c : byte_array_t(0 TO xof_data_out_size_c-1);
+    SIGNAL buffer_c : byte_array_t(xof_data_out_size_c-1 DOWNTO 0);
     SIGNAL d1 : coeff_t;
     SIGNAL d2 : coeff_t;
     SIGNAL coeff_cnt : NATURAL RANGE 0 TO 255;
 
     -- signals connecting to keccak unit
     SIGNAL xof_reset : STD_LOGIC;
-    SIGNAL xof_data_in : byte_array_t(0 TO xof_data_in_size_c-1);
+    SIGNAL xof_data_in : byte_array_t(xof_data_in_size_c-1 DOWNTO 0);
     SIGNAL xof_in_len : NATURAL RANGE 1 TO xof_data_in_size_c;
     SIGNAL xof_absorb : STD_LOGIC;
     SIGNAL xof_next_in : STD_LOGIC;
-    SIGNAL xof_data_out : byte_array_t(0 TO xof_data_out_size_c-1);
+    SIGNAL xof_data_out : byte_array_t(xof_data_out_size_c-1 DOWNTO 0);
     SIGNAL xof_squeeze : STD_LOGIC;
     SIGNAL xof_out_ready : STD_LOGIC;
     SIGNAL xof_busy : STD_LOGIC;
@@ -138,8 +138,8 @@ BEGIN
                             state <= GENERATE_COEFFS;
                         END IF;                        
                     WHEN GENERATE_COEFFS =>-------------------------
-                        d1 <= buffer_c(1)(0 TO 3) & buffer_c(0);
-                        d2 <= buffer_c(2) & buffer_c(1)(4 TO 7);
+                        d1 <= buffer_c(1)(3 DOWNTO 0) & buffer_c(0);
+                        d2 <= buffer_c(2) & buffer_c(1)(7 DOWNTO 4);
                         state <= STORE_COEFFS;
                     WHEN STORE_COEFFS =>----------------------------
                         j := 0;

@@ -22,13 +22,13 @@ ENTITY sample_poly_cbd IS
     );
     
     PORT (
-        b : IN  byte_array_t(0 TO 64*eta);
+        b : IN  byte_array_t(64*eta DOWNTO 0);
         f : OUT poly_t
     );
 END ENTITY sample_poly_cbd;
 
 ARCHITECTURE behavioral OF sample_poly_cbd IS
-    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 8*64*eta-1);
+    SIGNAL bit_array : STD_LOGIC_VECTOR(8*64*eta-1 DOWNTO 0);
 BEGIN
     bit_array <= bytestobits(b);
 
