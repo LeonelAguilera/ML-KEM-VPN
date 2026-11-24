@@ -7,7 +7,7 @@ from os.path import join, dirname, abspath
 from vunit import VUnit, VUnitCLI
 
 # Get parent directory -> FPGA
-root = dirname(dirname(__file__)) 
+root = dirname(dirname(dirname(__file__)))
 
 # Set output directory of VUnit -> has to be done before vunit instance is created
 cli = VUnitCLI()
@@ -22,10 +22,10 @@ lib = vu.add_library("lib")
 
 # Add VHDL files for the standard design
 lib.add_source_files(join(root, "hdl/mlkem_types_pkg.vhdl"))
-lib.add_source_files(join(root, "hdl/general_algorithms/byte_encode.vhdl"))
+lib.add_source_files(join(root, "hdl/general_algorithms/byte_decode.vhdl"))
 
 # Add testbench
-lib.add_source_files(join(root, "testbenches/tb_encode.vhdl"))
+lib.add_source_files(join(root, "testbenches/general_algorithms/byte_decode_tb.vhdl"))
 
 # Add files required for the synthesized version
 # lib.add_source_files(join(root, "hdl/module_name.vo")) # POSTRUN: uncomment
@@ -38,7 +38,7 @@ lib.add_source_files(join(root, "testbenches/tb_encode.vhdl"))
 # lib.set_sim_option("enable_coverage", True)
 
 # Load do-file that set up waveforms
-lib.set_sim_option("modelsim.init_file.gui", join(root, "simulation/do_files/setup_tb_encode.do"))
+lib.set_sim_option("modelsim.init_file.gui", join(root, "simulation/general_algorithms/byte_decode_setup.do"))
 
 # Set generics
 lib.set_generic("pipeline", 0)

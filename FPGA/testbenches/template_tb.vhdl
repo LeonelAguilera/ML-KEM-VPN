@@ -10,47 +10,46 @@ USE STD.textio.ALL;
 
 USE work.mlkem_types_pkg.ALL;
 
-ENTITY tb_encode IS
+ENTITY tb_name IS
   GENERIC (
     runner_cfg       : STRING;
     pipeline         : INTEGER := 0;
+    file_name        : STRING;
     clk_period       : TIME := 20 ns
     );
 END ENTITY;
 
-ARCHITECTURE behavioral OF tb_encode is
-    CONSTANT number_of_bits     : NATURAL := 5;
-
+ARCHITECTURE behavioral OF tb_name is
     TYPE test_data IS RECORD
-        f   : poly_t;
-        b   : byte_array_t(0 TO 32*number_of_bits-1);
+        -- inputa
+        -- inputb
+        -- outputa
+        -- outputb
     END RECORD test_data;
 
     TYPE out_data IS RECORD
-        b   : byte_array_t(0 TO 32*number_of_bits-1);
+        -- outputa
+        -- outputb
     END RECORD out_data;
 
     TYPE pipeddata IS ARRAY(INTEGER RANGE <>) OF test_data;
 
-    SIGNAL pipedout                         : pipeddata(0 TO pipeline);
-    SIGNAL pipeddone                        : STD_LOGIC_VECTOR(0 TO pipeline);
-    SIGNAL actual_data, out_conn            : out_data;
+    SIGNAL pipedout     : pipeddata(0 TO pipeline);
+    SIGNAL pipeddone    : STD_LOGIC_VECTOR(0 TO pipeline);
+    SIGNAL actual_data  : out_data;
     SIGNAL ref_data, delayed_ref_data       : test_data;
     SIGNAL done, delayed_done               : STD_LOGIC := '0';
     SIGNAL data_count                       : INTEGER   := 0;
 
-    SIGNAL clk                              : STD_LOGIC := '0';
+    SIGNAL inputa_conn  : 
 BEGIN
     -- --------------------------------------------------------------
     -- Connections to unit under test
     -- --------------------------------------------------------------
-    UUT : ENTITY work.byte_encode
+    UUT : ENTITY work.<entity_name>
         GENERIC MAP(
-            d => number_of_bits
           )
         PORT MAP(
-            f => ref_data.f,
-            b => out_conn.b
           );
 
     -- --------------------------------------------------------------
@@ -62,12 +61,12 @@ BEGIN
       WHILE delayed_done /= '1' LOOP
         WAIT UNTIL RISING_EDGE(clk);
         IF data_count >= pipeline + 1 AND delayed_done = '0' THEN
-            WAIT FOR 0.1 ns;
-            REPORT "TEST #" & to_string(data_count-pipeline) & 
-                ": f(0) = " & to_string(delayed_ref_data.f(0));
-            FOR i IN 0 TO 5 LOOP
-                check_equal(SIGNED(actual_data.b(i)), SIGNED(delayed_ref_data.b(i)));
-            END LOOP;
+          WAIT FOR 0.1 ns;
+          REPORT "TEST #" & to_string(data_count-pipeline) & 
+                ": inputa = " & to_string(ref_data.inputa) & 
+                ", inputb = " & to_string(ref_data.inputb);
+        --   check_equal(SIGNED(actual_data.ouputa), SIGNED(ref_data.outputa));
+        --   check_equal(SIGNED(actual_data.ouputb), SIGNED(ref_data.outputb));
         END IF;
       END LOOP;
 
@@ -75,37 +74,38 @@ BEGIN
     END PROCESS;
 
     -- --------------------------------------------------------------
-    -- Create test data
+    -- Reads one line of test file every clk cycle 
+    -- Stores values in record ref_data
     -- --------------------------------------------------------------
-    create_test : PROCESS
-        CONSTANT number_of_tests    : INTEGER := 2;
-
-        TYPE test_array_t IS ARRAY (0 TO number_of_tests-1) of STD_LOGIC_VECTOR(0 TO number_of_bits-1);
-
-        VARIABLE input_array : test_array_t := (
-            "11000",
-            "10001"
-        );
-
-        VARIABLE bit_array      : STD_LOGIC_VECTOR(0 TO 32*8*number_of_bits-1);
+    read_inputs : PROCESS
+        VARIABLE Iline                                          : line;
+        --VARIABLE file_inputa, file_inputb                     : integer;
+        VARIABLE chk_line                                       : lines_t;
     BEGIN
         WAIT UNTIL RISING_EDGE(clk);
-        IF data_count = number_of_tests THEN
-            done <= '1';
+        IF NOT(ENDFILE(intext)) THEN
+        READLINE(intext, Iline);
+        chk_line        := split(strip(Iline.all), ",");
+        -- Read test file input into record
+        -- READ(chk_line(0), file_inputa);
+        -- READ(chk_line(1), file_inputb);
+        -- READ(chk_line(2), file_outputa);
+        -- READ(chk_line(3), file_outputb);
+        -- ref_data.inputa      <= std_logic_vector(to_signed(file_inputa, wordlength));
+        -- ref_data.inputb      <= std_logic_vector(to_signed(file_inputb, wordlength));
+        -- ref_data.outputa     <= std_logic_vector(to_signed(file_outputa, wordlength));
+        -- ref_data.outputb     <= std_logic_vector(to_signed(file_outputb, wordlength));
+        data_count      <= data_count + 1;
         ELSE
-            FOR i IN 0 TO 255 LOOP  
-                ref_data.f(i) <= (0 TO COEFF_WL-number_of_bits-1 => '1') & input_array(data_count);
-                bit_array(i*number_of_bits TO (i+1)*number_of_bits-1) := input_array(data_count);
-            END LOOP;
-            ref_data.b <= bitstobytes(bit_array);
-            data_count <= data_count + 1;
-        END IF;        
+        done <= '1';
+        END IF;
     END PROCESS;
 
     storeoutput : PROCESS(clk)
     BEGIN
         IF RISING_EDGE(clk) THEN
-            actual_data.b <= out_conn.b;
+        -- actual_data.outputa <= outa;
+        -- actual_data.outputb <= outb;
         END IF;
     END PROCESS;
 

@@ -31,8 +31,8 @@ ARCHITECTURE tb OF tb_ntt IS
 
     SIGNAL f_hat, f_hat_d : poly_t;
 
-    SIGNAL f  : poly_t;
-    SIGNAL fp : poly_t;
+    --SIGNAL f  : poly_t;
+    --SIGNAL fp : poly_t;
 
     FILE intext: TEXT OPEN read_mode IS file_name;
     TYPE pipeddata IS ARRAY(INTEGER RANGE <>) OF ntt_data;
@@ -51,7 +51,7 @@ BEGIN
         VARIABLE chk_line: LINES_T;
         VARIABLE array_elements: LINES_T;
         VARIABLE file_f_element, file_f_hat_element: INTEGER;
-    BEGIN
+   BEGIN
         WAIT UNTIL rising_edge(clk);
         IF NOT(ENDFILE(intext)) THEN
             READLINE(intext, iline);
@@ -110,7 +110,7 @@ BEGIN
     dut: ENTITY work.ntt
         PORT MAP(
             f => data1.f,
-            fp => data1.f_hat
+            fp => f_hat
         );
 
     main: PROCESS

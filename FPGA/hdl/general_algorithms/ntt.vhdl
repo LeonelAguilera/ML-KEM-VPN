@@ -40,10 +40,10 @@ BEGIN
                         zeta => compute_ntt_zeta(start_i + (2**(7 - len_i)))
                     )
                     PORT MAP (
-                        x0 => layers(len_i - 1)(j),
-                        x1 => layers(len_i - 1)(j + (2**len_i)),
-                        y0 => layers(len_i)(j),
-                        y1 => layers(len_i)(j + (2**len_i))
+                        x0 => layers(7 - len_i)(j),
+                        x1 => layers(7 - len_i)(j + (2**len_i)),
+                        y0 => layers(8 - len_i)(j),
+                        y1 => layers(8 - len_i)(j + (2**len_i))
                     );
             END GENERATE;
         END GENERATE;

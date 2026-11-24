@@ -25,7 +25,7 @@ ENTITY compress IS
 END ENTITY compress;
 
 ARCHITECTURE behavioral OF compress IS
-    SUBTYPE extended_coeff_t IS STD_LOGIC_VECTOR(0 TO COEFF_WL+d);
+    SUBTYPE extended_coeff_t IS STD_LOGIC_VECTOR(COEFF_WL+d DOWNTO 0);
 BEGIN
 
     PROCESS(x)
@@ -37,7 +37,7 @@ BEGIN
             resize_x := (d DOWNTO 0 => '0') & x(coeff_index);
             -- + 1664 to round to nearest integer 
             var_compressed := STD_LOGIC_VECTOR((shift_left(unsigned(resize_x), d) + to_unsigned(1664, resize_x'length))/to_unsigned(MLKEM_Q, resize_x'length));  
-            comp(coeff_index) <= (comp'length-1 DOWNTO d => '0') & var_compressed(0 TO d-1);
+            comp(coeff_index) <= (comp'length-1 DOWNTO d => '0') & var_compressed(d-1 DOWNTO 0);
         END LOOP;
     END PROCESS;
          

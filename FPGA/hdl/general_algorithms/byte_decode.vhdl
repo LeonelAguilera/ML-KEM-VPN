@@ -22,13 +22,13 @@ ENTITY byte_decode IS
     );
 
     PORT (
-        b : IN byte_array_t(0 TO 32*d);
+        b : IN byte_array_t(32*d-1 DOWNTO 0);
         f : OUT  poly_t
     );
 END ENTITY byte_decode;
 
 ARCHITECTURE parallel OF byte_decode IS
-    SIGNAL bit_array : STD_LOGIC_VECTOR(0 TO 32*d*8-1);
+    SIGNAL bit_array : STD_LOGIC_VECTOR(32*d*8-1 DOWNTO 0);
 BEGIN
     bit_array <= bytestobits(b);
 
@@ -37,7 +37,7 @@ BEGIN
     BEGIN
         FOR coeff_index IN f'RANGE LOOP
             temp := (OTHERS => '0');
-            temp(0 TO d-1) := bit_array(coeff_index*d TO (coeff_index+1)*d-1); 
+            temp(d-1 DOWNTO 0) := bit_array((coeff_index+1)*d-1 DOWNTO coeff_index*d); 
 
             f(coeff_index) <= temp;
         END LOOP;
