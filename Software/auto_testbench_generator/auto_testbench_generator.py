@@ -110,7 +110,7 @@ def generate_testbench_file(path, entity_name, vhdl_file):
                     .replace("%TYPETRANSLATION%", get_type_conversion_function(rangeless_type).replace("%ELEMENTNAME%", element_variable_name))
                 )
         elif type_reference[rangeless_type][0] == "scalar":
-            array_elements = array_elements + "VARIABLE file_" + io.name + ": " + io.type.upper() + ";\n"
+            array_elements = array_elements + "VARIABLE file_" + io.name + ": " + type_reference[rangeless_type][1].upper() + ";\n"
             variable_assignments = variable_assignments + "READ(chk_line(" + str(port_index) + "), file_" + io.name + ");\n"
             if "std_logic_vector" in io.type:
                 vector_range = get_array_range(io.type)
@@ -120,6 +120,8 @@ def generate_testbench_file(path, entity_name, vhdl_file):
                 else:
                     word_width = "(" + vector_extremes.group(3) + " - " + vector_extremes.group(1) + " + 1)"
                 variable_assignments = variable_assignments + "data1." + io.name + " <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_" + io.name + ", " + word_width + "))\n"
+            if "coeff_t" in io.type:
+                variable_assignments = variable_assignments + "data1." + io.name + " <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_" + io.name + ", COEFF_WL));\n"
             elif "unsigned" in io.type:
                 if "downto" in vector_range:
                     word_width = "(" + vector_extremes.group(1) + " - " + vector_extremes.group(3) + " + 1)"
