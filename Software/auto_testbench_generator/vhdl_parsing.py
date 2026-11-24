@@ -29,6 +29,10 @@ def get_vhdl_entity(file_content, entity_name):
         generic = Generic()
         generic.name = re.findall(r"\w+", generic_code[i])[0].strip()
         generic.type = re.findall(r"\w+", generic_code[i])[1].strip()
+        try:
+            generic.default_value = re.search(r":=([^;\n]*)", generic_code[i]).group(1)
+        except:
+            generic.default_value = "0"
         generics.append(generic)
 
     port_code = re.findall(r"port[^.]+\);", entity_code)[0]

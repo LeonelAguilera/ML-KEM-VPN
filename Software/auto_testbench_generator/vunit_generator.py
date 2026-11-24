@@ -16,6 +16,10 @@ def generate_vunit_file(path, entity_name, vhdl_file):
         instance_path = remove_parent_path(find_file(instantiated_entity + ".vhdl", get_parent_path(path)))
         instance_imports = instance_imports + add_source_file_string.replace("%MODULE_PATH%", instance_path) + '\n'
 
+    set_generics = ""
+    for generic in vhdl_file.entity.generics:
+        set_generics = set_generics + 'lib.set_generic("' + generic.name + '", ' + generic.default_value + ')\n'
+
     main_entity_import = remove_parent_path(path)
 
     testbench_import = main_entity_import.replace(".vhdl", "_tb.vhdl")
@@ -33,6 +37,7 @@ def generate_vunit_file(path, entity_name, vhdl_file):
             .replace("%MAIN_FILE%", main_entity_import)
             .replace("%TESTBENCH_FILE%", testbench_import)
             .replace("%DO_FILE%", dofile_import)
+            .replace("%SETGENERICS%", set_generics)
             .replace("%TEST_FILE%", test_file_path)
         )
     return vunit_file

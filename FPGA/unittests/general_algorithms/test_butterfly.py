@@ -14,7 +14,7 @@ root = dirname(dirname(dirname(__file__))).replace("\\", "/")
 
 # Set output directory of VUnit -> has to be done before vunit instance is created
 cli = VUnitCLI()
-cli.parser.set_defaults(output_path=join(root, "unittests/general_algorithms/test_ntt/vunit_out"))
+cli.parser.set_defaults(output_path=join(root, "unittests/general_algorithms/test_butterfly/vunit_out"))
 args = cli.parse_args()
 
 # Pass on the args to vunit instance together with output path
@@ -26,17 +26,15 @@ lib = vu.add_library("lib")
 
 # Add packages required for the testbench
 lib.add_source_files(join(root, "hdl/mlkem_types_pkg.vhdl").replace("\\", "/"))
-lib.add_source_files(join(root, "hdl/ntt_helper_functions.vhdl").replace("\\", "/"))
 
 
 # Add VHDL files for the standard design
-lib.add_source_files(join(root, "hdl/general_algorithms/butterfly.vhdl").replace("\\", "/"))
 
-lib.add_source_files(join(root, "hdl/general_algorithms/ntt.vhdl").replace("\\", "/"))
+lib.add_source_files(join(root, "hdl/general_algorithms/butterfly.vhdl").replace("\\", "/"))
 
 
 # Add testbenches
-lib.add_source_files(join(root, "testbenches/general_algorithms/ntt_tb.vhdl").replace("\\", "/"))
+lib.add_source_files(join(root, "testbenches/general_algorithms/butterfly_tb.vhdl").replace("\\", "/"))
 
 # Set flags for coverage
 if generate_coverage_report:
@@ -45,11 +43,13 @@ if generate_coverage_report:
     lib.set_sim_option("enable_coverage", True)
 
 # Load do-file that set up waveforms
-lib.set_sim_option("modelsim.init_file.gui", join(root, "simulation/general_algorithms/ntt.do"))
+lib.set_sim_option("modelsim.init_file.gui", join(root, "simulation/general_algorithms/butterfly.do"))
 
 # Set generics
 lib.set_generic("pipeline", 0)
-lib.set_generic("file_name", join(root, "testbenches/general_algorithms/ntt.txt").replace("\\", "/"))
+lib.set_generic("file_name", join(root, "testbenches/general_algorithms/butterfly.txt").replace("\\", "/"))
+lib.set_generic("zeta",  "000000000001")
+
 
 # Set if logic_op is an enum or binary
 # False: use enum
@@ -59,7 +59,7 @@ lib.set_generic("file_name", join(root, "testbenches/general_algorithms/ntt.txt"
 # Coverage callback
 if generate_coverage_report:
     def post_run(results):
-        results.merge_coverage(file_name=join(root, "unittests/general_algorithms/test_ntt/coverage_data"))
+        results.merge_coverage(file_name=join(root, "unittests/general_algorithms/test_butterfly/coverage_data"))
     vu.main(post_run=post_run)
 else:
     vu.main()

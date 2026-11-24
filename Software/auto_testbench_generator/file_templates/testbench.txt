@@ -52,17 +52,7 @@ BEGIN
             READLINE(intext, iline);
             chk_line := SPLIT(STRIP(iline.ALL), ";");
 
-            array_elements := SPLIT(STRIP(chk_line(0).ALL), ",");
-            FOR i IN 0 TO 255 LOOP
-                READ(array_elements(i), file_f_element);
-                data1.f(i) <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_f_element, COEFF_WL));
-            END LOOP;
-
-            array_elements := SPLIT(STRIP(chk_line(1).ALL), ",");
-            FOR i IN 0 TO 255 LOOP
-                READ(array_elements(i), file_f_hat_element);
-                data1.f_hat(i) <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_f_hat_element, COEFF_WL));
-            END LOOP;
+%VARIABLEASSIGNMENTS%
 
             data_count <= data_count + 1;
         ELSE
@@ -92,7 +82,7 @@ BEGIN
     storeoutput: PROCESS(clk)
     BEGIN
         IF RISING_EDGE(clk) THEN
-            f_hat_d <= f_hat;
+%WRITEOUTPUT%
         END IF;
     END PROCESS;
 
@@ -102,10 +92,10 @@ BEGIN
         WAIT FOR clk_period;
     END PROCESS clk_gen;
 
-    dut: ENTITY work.ntt
+    dut: ENTITY work.%ENTITYNAME%
+        %GENERICMAP%
         PORT MAP(
-            f => data1.f,
-            fp => f_hat
+%PORTMAP%
         );
 
     main: PROCESS
@@ -116,7 +106,7 @@ BEGIN
             IF data_count >= PIPELINE + 1 AND delayeddone = '0' THEN
                 WAIT FOR 0.1 NS;
                 FOR index IN 0 TO 255 LOOP
-                    CHECK_EQUAL(UNSIGNED(f_hat_d(index)), UNSIGNED(ref_data.f_hat(index)), "Inputs: " & INTEGER'IMAGE(TO_INTEGER(UNSIGNED(ref_data.f(index)))));
+%TESTCHECK%
                 END LOOP;
             END IF;
         END LOOP;

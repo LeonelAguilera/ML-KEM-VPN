@@ -4,9 +4,10 @@ import json
 class Generic:
     name = ""
     type = ""
+    default_value = ""
 
     def __repr__(self):
-        return f"Generic(name = {self.name!r}, type = {self.type!r}"
+        return f"Generic(name = {self.name!r}, type = {self.type!r}, default = {self.default_value!r}"
 
 
 class Port:
