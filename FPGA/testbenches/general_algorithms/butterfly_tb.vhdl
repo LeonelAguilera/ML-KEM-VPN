@@ -55,10 +55,10 @@ BEGIN
         VARIABLE iline: LINE;
         VARIABLE chk_line: LINES_T;
         VARIABLE array_elements: LINES_T;
-        VARIABLE file_x0: COEFF_T;
-VARIABLE file_x1: COEFF_T;
-VARIABLE file_y0: COEFF_T;
-VARIABLE file_y1: COEFF_T;
+        VARIABLE file_x0: INTEGER;
+VARIABLE file_x1: INTEGER;
+VARIABLE file_y0: INTEGER;
+VARIABLE file_y1: INTEGER;
 
     BEGIN
         WAIT UNTIL rising_edge(clk);
@@ -67,13 +67,13 @@ VARIABLE file_y1: COEFF_T;
             chk_line := SPLIT(STRIP(iline.ALL), ";");
 
 READ(chk_line(0), file_x0);
-data1.x0 <= file_x0;
+data1.x0 <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_x0, COEFF_WL));
 READ(chk_line(1), file_x1);
-data1.x1 <= file_x1;
+data1.x1 <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_x1, COEFF_WL));
 READ(chk_line(2), file_y0);
-data1.y0 <= file_y0;
+data1.y0 <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_y0, COEFF_WL));
 READ(chk_line(3), file_y1);
-data1.y1 <= file_y1;
+data1.y1 <= STD_LOGIC_VECTOR(TO_UNSIGNED(file_y1, COEFF_WL));
 
 
             data_count <= data_count + 1;
@@ -135,11 +135,9 @@ y1_d <= y1;
             WAIT UNTIL RISING_EDGE(clk);
             IF data_count >= PIPELINE + 1 AND delayeddone = '0' THEN
                 WAIT FOR 0.1 NS;
-                FOR index IN 0 TO 255 LOOP
-					CHECK_EQUAL(y0_d, ref_data.y0, "Inputs: [THIS IS A PLACEHOLDER, TO GET INPUT DISPLAY MODIFY THE TESTBENCH DIRECTLY]");
-					CHECK_EQUAL(y1_d, ref_data.y1, "Inputs: [THIS IS A PLACEHOLDER, TO GET INPUT DISPLAY MODIFY THE TESTBENCH DIRECTLY]");
+				CHECK_EQUAL(y0_d, ref_data.y0, "Inputs: [THIS IS A PLACEHOLDER, TO GET INPUT DISPLAY MODIFY THE TESTBENCH DIRECTLY]");
+				CHECK_EQUAL(y1_d, ref_data.y1, "Inputs: [THIS IS A PLACEHOLDER, TO GET INPUT DISPLAY MODIFY THE TESTBENCH DIRECTLY]");
 
-                END LOOP;
             END IF;
         END LOOP;
 

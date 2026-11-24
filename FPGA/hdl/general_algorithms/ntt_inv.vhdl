@@ -19,7 +19,7 @@ ARCHITECTURE behavioral OF ntt_inv IS
 
     SIGNAL layers: layers_t;
 
-    COMPONENT butterfly IS
+    COMPONENT butterfly_inv IS
         GENERIC(
             zeta: coeff_t
         );
@@ -35,9 +35,9 @@ BEGIN
     ntt_layers: FOR len_i IN 1 TO layer_count GENERATE
         ntt_sections: FOR start_i IN 0 TO (256/(2*(2**len_i)) - 1) GENERATE
             ntt_butterflies: FOR j IN (2*(2**len_i)*start_i) TO ((2*(2**len_i)*start_i) + (2**len_i) - 1) GENERATE
-                ntt_butterfly: butterfly
+                ntt_butterfly: butterfly_inv
                     GENERIC MAP (
-                        zeta => compute_ntt_zeta(128 - (start_i + (2**(7 - len_i))))
+                        zeta => compute_ntt_zeta((2**(8 - len_i)) - start_i - 1)
                     )
                     PORT MAP (
                         x0 => layers(len_i - 1)(j),

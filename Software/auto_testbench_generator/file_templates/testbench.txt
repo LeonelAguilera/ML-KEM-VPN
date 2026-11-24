@@ -105,9 +105,7 @@ BEGIN
             WAIT UNTIL RISING_EDGE(clk);
             IF data_count >= PIPELINE + 1 AND delayeddone = '0' THEN
                 WAIT FOR 0.1 NS;
-                FOR index IN 0 TO 255 LOOP
 %TESTCHECK%
-                END LOOP;
             END IF;
         END LOOP;
 

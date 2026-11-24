@@ -171,7 +171,7 @@ def generate_testbench_file(path, entity_name, vhdl_file):
     test_check = ""
     for port in vhdl_file.entity.ports:
         if port.direction == "out":
-            test_check = test_check + '\t\t\t\t\tCHECK_EQUAL(' + port.name + '_d, ref_data.' + port.name + ', "Inputs: [THIS IS A PLACEHOLDER, TO GET INPUT DISPLAY MODIFY THE TESTBENCH DIRECTLY]");\n'
+            test_check = test_check + '\t\t\t\tCHECK_EQUAL(' + port.name + '_d, ref_data.' + port.name + ', "Inputs: [THIS IS A PLACEHOLDER, TO GET INPUT DISPLAY MODIFY THE TESTBENCH DIRECTLY]");\n'
 
     testbench_template = open_file("file_templates/testbench.txt")
     testbench_file = (

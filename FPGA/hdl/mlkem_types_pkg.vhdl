@@ -69,26 +69,26 @@ PACKAGE BODY mlkem_types_pkg IS
         lhs: coeff_t;
         rhs: coeff_t
     ) RETURN coeff_t IS
-        VARIABLE intermediate_result: UNSIGNED(0 TO COEFF_WL);
+        VARIABLE intermediate_result: UNSIGNED(COEFF_WL DOWNTO 0);
     BEGIN
-        intermediate_result := UNSIGNED(lhs & '0') + UNSIGNED(rhs & '0');
+        intermediate_result := UNSIGNED('0' & lhs) + UNSIGNED('0' & rhs);
         IF intermediate_result >= MLKEM_Q THEN
             intermediate_result := intermediate_result - MLKEM_Q;
         END IF;
-        RETURN STD_LOGIC_VECTOR(intermediate_result(0 TO COEFF_WL - 1));
+        RETURN STD_LOGIC_VECTOR(intermediate_result(COEFF_WL - 1 DOWNTO 0));
     END FUNCTION "+";
 
     FUNCTION "-" (
         lhs: coeff_t;
         rhs: coeff_t
     ) RETURN coeff_t IS
-        VARIABLE intermediate_result: UNSIGNED(0 TO COEFF_WL);
+        VARIABLE intermediate_result: SIGNED(COEFF_WL DOWNTO 0);
     BEGIN
-        intermediate_result := UNSIGNED(lhs & '0') - UNSIGNED(rhs & '0');
+        intermediate_result := SIGNED('0' & lhs) - SIGNED('0' & rhs);
         IF intermediate_result < 0 THEN
             intermediate_result := intermediate_result + MLKEM_Q;
         END IF;
-        RETURN STD_LOGIC_VECTOR(intermediate_result(0 TO COEFF_WL - 1));
+        RETURN STD_LOGIC_VECTOR(intermediate_result(COEFF_WL - 1 DOWNTO 0));
     END FUNCTION "-";
 
     FUNCTION "*" (
@@ -97,28 +97,28 @@ PACKAGE BODY mlkem_types_pkg IS
     ) RETURN coeff_t IS
         CONSTANT mmwl: INTEGER := 18; -- MMWL means: Minimum Multiplier Word Length
         CONSTANT wl_difference: INTEGER := mmwl - COEFF_WL;
-        CONSTANT reciprocal: UNSIGNED(0 TO (mmwl - 1)) := TO_UNSIGNED(161270, mmwl); -- Obtained via ((2^6)/MLKEM_Q)*2^23
+        CONSTANT reciprocal: UNSIGNED(mmwl - 1 DOWNTO 0) := TO_UNSIGNED(161270, mmwl); -- Obtained via ((2^6)/MLKEM_Q)*2^23
         -- where 6=(2*COEFF_WL - mmwl)
         -- where 23 = bit-shift required to move the MSB of the previous operation to the MSB of MMWL
-        CONSTANT padding: STD_LOGIC_VECTOR(0 TO wl_difference - 1) := STD_LOGIC_VECTOR(TO_UNSIGNED(0, wl_difference));
+        CONSTANT padding: STD_LOGIC_VECTOR(wl_difference - 1 DOWNTO 0) := STD_LOGIC_VECTOR(TO_UNSIGNED(0, wl_difference));
 
-        VARIABLE product: UNSIGNED(0 TO (2 * mmwl) - 1);
-        VARIABLE shifted_product: UNSIGNED(0 TO (2 * mmwl) - 1);
-        VARIABLE n_p_temp: UNSIGNED(0 TO (2 * mmwl) - 1);
-        VARIABLE n_p: UNSIGNED(0 TO COEFF_WL - 1);
-        VARIABLE pre_modulo: UNSIGNED(0 TO (2 * mmwl) - 1);
-        VARIABLE modulo: UNSIGNED(0 TO COEFF_WL - 1);
+        VARIABLE product: UNSIGNED((2 * mmwl) - 1 DOWNTO 0);
+        VARIABLE shifted_product: UNSIGNED((2 * mmwl) - 1 DOWNTO 0);
+        VARIABLE n_p_temp: UNSIGNED((2 * mmwl) - 1 DOWNTO 0);
+        VARIABLE n_p: UNSIGNED(COEFF_WL - 1 DOWNTO 0);
+        VARIABLE pre_modulo: UNSIGNED((2 * mmwl) - 1 DOWNTO 0);
+        VARIABLE final_modulo: UNSIGNED(COEFF_WL - 1 DOWNTO 0);
     BEGIN
-        product := UNSIGNED(STD_LOGIC_VECTOR'(lhs & padding)) * UNSIGNED(STD_LOGIC_VECTOR'(rhs & padding));
+        product := UNSIGNED(STD_LOGIC_VECTOR'(padding & lhs)) * UNSIGNED(STD_LOGIC_VECTOR'(padding & rhs));
         shifted_product := SHIFT_RIGHT(product, 6);
-        n_p_temp := SHIFT_RIGHT(shifted_product(0 TO mmwl - 1) * reciprocal, 23);
-        n_p := n_p_temp(0 TO COEFF_WL - 1);
+        n_p_temp := SHIFT_RIGHT(shifted_product(mmwl - 1 DOWNTO 0) * reciprocal, 23);
+        n_p := n_p_temp(COEFF_WL - 1 DOWNTO 0);
         pre_modulo := product - (MLKEM_Q * n_p);
-        modulo := pre_modulo(0 TO COEFF_WL - 1);
-        IF modulo > MLKEM_Q THEN
-            RETURN STD_LOGIC_VECTOR(modulo - MLKEM_Q);
+        final_modulo := pre_modulo(COEFF_WL - 1 DOWNTO 0);
+        IF final_modulo > MLKEM_Q THEN
+            RETURN STD_LOGIC_VECTOR(final_modulo - MLKEM_Q);
         ELSE
-            RETURN STD_LOGIC_VECTOR(modulo);
+            RETURN STD_LOGIC_VECTOR(final_modulo);
         END IF;
     END FUNCTION "*";
 END PACKAGE BODY mlkem_types_pkg;
